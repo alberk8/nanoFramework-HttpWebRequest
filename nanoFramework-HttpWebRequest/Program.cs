@@ -54,7 +54,7 @@ namespace nanoFramework_HttpWebRequest
 
                     // perform the request as a HttpWebRequest
                     using var httpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(url));
-
+                    httpWebRequest.KeepAlive = false;
                     httpWebRequest.Method = "GET";
 
                     Debug.WriteLine(httpWebRequest.RequestUri.Host);
