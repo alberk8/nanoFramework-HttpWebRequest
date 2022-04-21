@@ -13,6 +13,9 @@ namespace nanoFramework_HttpWebRequest
     {
         private static string MySsid = "ssid";
         private static string MyPassword = "password";
+
+      
+
         public static void Main()
         {
             Debug.WriteLine("Hello from nanoFramework!");
@@ -20,17 +23,14 @@ namespace nanoFramework_HttpWebRequest
             Debug.WriteLine("Waiting for network up and IP address...");
             bool success;
             CancellationTokenSource cs = new(60000);
-
-            success = NetworkHelper.ConnectWifiDhcp(MySsid, MyPassword, setDateTime: true, token: cs.Token);
+            
+            success =    WiFiNetworkHelper.ConnectDhcp(MySsid, MyPassword, requiresDateTime: true, token: cs.Token);
 
 
             if (!success)
             {
-                Debug.WriteLine($"Can't get a proper IP address and DateTime, error: {NetworkHelper.ConnectionError.Error}.");
-                if (NetworkHelper.ConnectionError.Exception != null)
-                {
-                    Debug.WriteLine($"Exception: {NetworkHelper.ConnectionError.Exception}");
-                }
+                Debug.WriteLine($"Can't get a proper IP address and DateTime, error: {WiFiNetworkHelper.Status}.");
+              
                 return;
             }
 
@@ -40,11 +40,11 @@ namespace nanoFramework_HttpWebRequest
                 Debug.WriteLine($"IP Address: {hosts[0].ToString()}");
 
             //HTTPS - uncomment next two lines
-            //string url = "https://global-root-ca.chain-demos.digicert.com";
-            //X509Certificate rootCACert = new X509Certificate(Resource.GetBytes(Resource.BinaryResources.DigiCertGlobalRootCA));
+            string url = "https://global-root-ca.chain-demos.digicert.com";
+            X509Certificate rootCACert = new X509Certificate(Resource.GetBytes(Resource.BinaryResources.DigiCertGlobalRootCA));
 
             //HTTP
-            string url = "http://example.com";
+            //string url = "http://example.com";
 
             for (int i = 0; i < 20; i++)
             {
@@ -62,8 +62,8 @@ namespace nanoFramework_HttpWebRequest
                   
 
                     // For HTTPS - uncomment next two lines
-                    //httpWebRequest.SslProtocols = System.Net.Security.SslProtocols.Tls12;
-                    //httpWebRequest.HttpsAuthentCert = rootCACert;
+                    httpWebRequest.SslProtocols = System.Net.Security.SslProtocols.Tls12;
+                    httpWebRequest.HttpsAuthentCert = rootCACert;
 
                     // get the response as a HttpWebResponse
                     // wrap the response object with a using statement to make sure that it's disposed
